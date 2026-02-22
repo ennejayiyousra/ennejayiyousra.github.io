@@ -3,13 +3,12 @@
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
     initializeParticles();
-    initializeCustomCursor();
     initializeNavigation();
     initializeAnimations();
     initializeSkills();
     initializeTheme();
-    initializeContactForm();
     initializeTypingEffect();
+    initializeProjectCards();
 });
 
 // ========================================
@@ -109,67 +108,6 @@ function initializeParticles() {
             retina_detect: true
         });
     }
-}
-
-// ========================================
-// CUSTOM CURSOR
-// ========================================
-function initializeCustomCursor() {
-    const cursor = document.querySelector('.custom-cursor');
-    const follower = document.querySelector('.cursor-follower');
-    
-    if (!cursor || !follower) return;
-    
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-    let followerX = 0, followerY = 0;
-    
-    // Track mouse position
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-    
-    // Animate cursor
-    function animateCursor() {
-        // Main cursor with minimal lag
-        cursorX += (mouseX - cursorX) * 0.9;
-        cursorY += (mouseY - cursorY) * 0.9;
-        cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
-        
-        // Follower with more lag for smooth effect
-        followerX += (mouseX - followerX) * 0.6;
-        followerY += (mouseY - followerY) * 0.6;
-        follower.style.transform = `translate(${followerX - 4}px, ${followerY - 4}px)`;
-        
-        requestAnimationFrame(animateCursor);
-    }
-    
-    animateCursor();
-    
-    // Cursor effects on hover
-    const interactiveElements = document.querySelectorAll('a, button, .flip-card, .project-card, .social-link');
-    
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursor.style.width = '30px';
-            cursor.style.height = '30px';
-            cursor.style.borderColor = '#c44569';
-            follower.style.width = '12px';
-            follower.style.height = '12px';
-        });
-        
-        el.addEventListener('mouseleave', () => {
-            cursor.style.width = '20px';
-            cursor.style.height = '20px';
-            cursor.style.borderColor = '#ff6b9d';
-            follower.style.width = '8px';
-            follower.style.height = '8px';
-        });
-    });
-    
-    // Hide default cursor
-    document.body.classList.add('hide-cursor');
 }
 
 // ========================================
@@ -437,60 +375,6 @@ sparkleStyle.textContent = `
 document.head.appendChild(sparkleStyle);
 
 // ========================================
-// CONTACT FORM
-// ========================================
-function initializeContactForm() {
-    const form = document.getElementById('contactForm');
-    
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            
-            // Create mailto link
-            const mailtoLink = `mailto:yousra.ennejay@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-            
-            // Open mail client
-            window.location.href = mailtoLink;
-            
-            // Show success message
-            showNotification('Message sent successfully! ✨');
-            
-            // Reset form with animation
-            const inputs = form.querySelectorAll('input, textarea');
-            inputs.forEach((input, index) => {
-                setTimeout(() => {
-                    input.value = '';
-                    input.style.animation = 'fadeInUp 0.5s ease';
-                }, index * 100);
-            });
-        });
-        
-        // Add focus effects to form inputs
-        const formGroups = document.querySelectorAll('.form-group');
-        formGroups.forEach(group => {
-            const input = group.querySelector('input, textarea');
-            
-            if (input) {
-                input.addEventListener('focus', () => {
-                    group.style.transform = 'scale(1.02)';
-                    createSparkles(group);
-                });
-                
-                input.addEventListener('blur', () => {
-                    group.style.transform = 'scale(1)';
-                });
-            }
-        });
-    }
-}
-
-// ========================================
 // NOTIFICATION SYSTEM
 // ========================================
 function showNotification(message) {
@@ -608,37 +492,34 @@ function initializeTypingEffect() {
 // ========================================
 // PROJECT CARDS HOVER EFFECT
 // ========================================
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mouseenter', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
+function initializeProjectCards() {
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transition = 'box-shadow 0.3s ease, transform 0s';
+        });
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = '';
+            card.style.transform = '';
+        });
     });
-    
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-        
-        // 3D tilt effect
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-        
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-    });
-});
+}
 
 // ========================================
 // SCROLL REVEAL ENHANCEMENTS
@@ -659,43 +540,6 @@ window.addEventListener('scroll', () => {
         
         if (isVisible) {
             item.classList.add('revealed');
-        }
-    });
-});
-
-// ========================================
-// MAGIC MOUSE TRAIL
-// ========================================
-let mouseTrail = [];
-const trailLength = 20;
-
-for (let i = 0; i < trailLength; i++) {
-    const trail = document.createElement('div');
-    trail.className = 'mouse-trail';
-    trail.style.cssText = `
-        position: fixed;
-        width: ${4 + i * 0.5}px;
-        height: ${4 + i * 0.5}px;
-        background: rgba(255, 107, 157, ${0.5 - i * 0.02});
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9998;
-        transition: transform 0.1s ease;
-    `;
-    document.body.appendChild(trail);
-    mouseTrail.push(trail);
-}
-
-let mousePositions = [];
-
-document.addEventListener('mousemove', (e) => {
-    mousePositions.unshift({ x: e.clientX, y: e.clientY });
-    mousePositions = mousePositions.slice(0, trailLength);
-    
-    mouseTrail.forEach((trail, index) => {
-        if (mousePositions[index]) {
-            trail.style.transform = `translate(${mousePositions[index].x - 2}px, ${mousePositions[index].y - 2}px)`;
-            trail.style.opacity = 1 - (index / trailLength);
         }
     });
 });
