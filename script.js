@@ -8,8 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSkills();
     initializeTheme();
     initializeTypingEffect();
-    initializeProjectCards();
-    initializeProjectsPage();
+    loadProjects();
     initializeBackToTop();
 });
 
@@ -492,35 +491,115 @@ function initializeTypingEffect() {
 }
 
 // ========================================
-// PROJECT CARDS HOVER EFFECT
+// PROJECT CARDS - LOAD FROM JSON
 // ========================================
-function initializeProjectCards() {
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transition = 'box-shadow 0.3s ease, transform 0s';
-        });
+function createProjectCardHTML(project) {
+    const tags = project.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
+    const tech = project.tech.map(t => `<span>${t}</span>`).join('');
+    let links = '';
+    if (project.github) {
+        links += `<a href="${project.github}" class="project-link" target="_blank"><i class="fab fa-github"></i></a>`;
+    }
+    if (project.demo) {
+        links += `<a href="${project.demo}" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i></a>`;
+    }
 
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+    return `
+        <div class="project-image">
+            <div class="project-overlay"><i class="${project.icon}"></i></div>
+            <div class="project-tags">${tags}</div>
+        </div>
+        <div class="project-content">
+            <h3>${project.name}</h3>
+            <p>${project.description}</p>
+            <div class="project-tech">${tech}</div>
+            <div class="project-links">${links}</div>
+        </div>
+    `;
+}
 
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
-
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -10;
-            const rotateY = ((x - centerX) / centerX) * 10;
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transition = '';
-            card.style.transform = '';
-        });
+function initializeProjectCardTilt(card) {
+    card.addEventListener('mouseenter', () => {
+        card.style.transition = 'box-shadow 0.3s ease, transform 0s';
     });
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -10;
+        const rotateY = ((x - centerX) / centerX) * 10;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transition = '';
+        card.style.transform = '';
+    });
+}
+
+function loadProjects() {
+    if (typeof PROJECTS_DATA === 'undefined') return;
+    const projects = PROJECTS_DATA;
+    {
+            // Render featured projects on index.html
+            const featuredGrid = document.querySelector('#projects .projects-grid');
+            if (featuredGrid) {
+                const featured = projects.filter(p => p.featured);
+                featuredGrid.innerHTML = '';
+                featured.forEach((project, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.setAttribute('data-aos', 'flip-left');
+                    card.setAttribute('data-aos-delay', String((i + 1) * 100));
+                    card.innerHTML = createProjectCardHTML(project);
+                    featuredGrid.appendChild(card);
+                    initializeProjectCardTilt(card);
+                });
+                if (typeof AOS !== 'undefined') AOS.refresh();
+            }
+
+            // Render all projects on projects.html
+            const allGrid = document.getElementById('projects-grid');
+            if (allGrid) {
+                allGrid.innerHTML = '';
+                const allTags = new Set();
+
+                projects.forEach((project, i) => {
+                    project.tags.forEach(t => allTags.add(t));
+                    const categories = project.tags.map(t => t.toLowerCase().replace(/\s+/g, '-')).join(' ');
+
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.setAttribute('data-aos', 'fade-up');
+                    card.setAttribute('data-aos-delay', String((i + 1) * 100));
+                    card.dataset.categories = categories;
+                    card.dataset.name = project.name;
+                    card.dataset.description = project.description;
+                    card.dataset.tech = project.tech.join(' ');
+                    card.innerHTML = createProjectCardHTML(project);
+                    allGrid.appendChild(card);
+                    initializeProjectCardTilt(card);
+                });
+
+                // Auto-generate filter buttons
+                const filtersContainer = document.querySelector('.projects-filters');
+                if (filtersContainer) {
+                    filtersContainer.innerHTML = '<button class="filter-btn active" data-filter="all">All</button>';
+                    allTags.forEach(tag => {
+                        const slug = tag.toLowerCase().replace(/\s+/g, '-');
+                        const btn = document.createElement('button');
+                        btn.className = 'filter-btn';
+                        btn.dataset.filter = slug;
+                        btn.textContent = tag;
+                        filtersContainer.appendChild(btn);
+                    });
+                }
+
+                if (typeof AOS !== 'undefined') AOS.refresh();
+                initializeProjectsPage();
+            }
+    }
 }
 
 // ========================================
@@ -622,19 +701,18 @@ document.head.appendChild(easterEggStyle);
 function initializeProjectsPage() {
     const searchInput = document.getElementById('project-search');
     const searchClear = document.getElementById('search-clear');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('#projects-grid .project-card');
     const noResults = document.getElementById('no-results');
 
-    if (!searchInput || !projectCards.length) return;
+    if (!searchInput) return;
 
     let activeFilter = 'all';
 
     function filterAndSearch() {
+        const cards = document.querySelectorAll('#projects-grid .project-card');
         const searchTerm = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
 
-        projectCards.forEach(card => {
+        cards.forEach(card => {
             const name = (card.dataset.name || '').toLowerCase();
             const description = (card.dataset.description || '').toLowerCase();
             const tech = (card.dataset.tech || '').toLowerCase();
@@ -676,13 +754,13 @@ function initializeProjectsPage() {
         });
     }
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            activeFilter = btn.dataset.filter;
-            filterAndSearch();
-        });
+    document.querySelector('.projects-filters').addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        filterAndSearch();
     });
 }
 

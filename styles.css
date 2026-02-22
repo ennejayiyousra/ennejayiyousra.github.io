@@ -132,6 +132,7 @@ body.dark-theme .navbar {
     font-weight: 900;
     color: var(--primary-pink);
     cursor: pointer;
+    text-decoration: none;
 }
 
 .logo-sparkle {
