@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Projects - Yousra Ennejayi</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-text">YE</span>
+                <span class="logo-sparkle">✨</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#education" class="nav-link">Education</a></li>
+                <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+                <li><a href="projects.html" class="nav-link active">Projects</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="projects-page-header">
+        <div class="container">
+            <h1 class="section-title" data-aos="fade-up">
+                All <span class="title-accent">Projects</span>
+            </h1>
+            <p class="projects-page-subtitle" data-aos="fade-up" data-aos-delay="100">
+                A complete collection of my work in AI, deep learning, and software development.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="projects-search" data-aos="fade-up" data-aos-delay="200">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="project-search" placeholder="Search projects...">
+                    <button id="search-clear" class="search-clear" style="display:none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tags -->
+            <div class="projects-filters" data-aos="fade-up" data-aos-delay="300">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="deep-learning">Deep Learning</button>
+                <button class="filter-btn" data-filter="cnn">CNN</button>
+                <button class="filter-btn" data-filter="research">Research</button>
+                <button class="filter-btn" data-filter="healthcare-ai">Healthcare AI</button>
+                <button class="filter-btn" data-filter="classification">Classification</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="projects projects-page-grid">
+        <div class="container">
+            <div class="projects-grid" id="projects-grid">
+
+                <!-- Project 1: DeblurGAN-v2 -->
+                <div class="project-card" data-aos="fade-up" data-aos-delay="100"
+                     data-categories="deep-learning research"
+                     data-name="DeblurGAN-v2 Research"
+                     data-description="Advanced image deblurring using GANs with Feature Pyramid Networks and Relativistic GANs. Includes web application with batch processing."
+                     data-tech="PyTorch Flask Computer Vision">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="project-tags">
+                            <span class="project-tag">Deep Learning</span>
+                            <span class="project-tag">Research</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>DeblurGAN-v2 Research</h3>
+                        <p>Advanced image deblurring using GANs with Feature Pyramid Networks and Relativistic GANs. Includes web application with batch processing.</p>
+                        <div class="project-tech">
+                            <span>PyTorch</span>
+                            <span>Flask</span>
+                            <span>Computer Vision</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Tifinagh Character Recognition -->
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200"
+                     data-categories="cnn classification"
+                     data-name="Tifinagh Character Recognition"
+                     data-description="Deep learning model for recognizing Tifinagh characters using CNNs with custom dataset preprocessing and augmentation."
+                     data-tech="TensorFlow Keras OpenCV">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="project-tags">
+                            <span class="project-tag">CNN</span>
+                            <span class="project-tag">Classification</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Tifinagh Character Recognition</h3>
+                        <p>Deep learning model for recognizing Tifinagh characters using CNNs with custom dataset preprocessing and augmentation.</p>
+                        <div class="project-tech">
+                            <span>TensorFlow</span>
+                            <span>Keras</span>
+                            <span>OpenCV</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Medical Image Classification -->
+                <div class="project-card" data-aos="fade-up" data-aos-delay="300"
+                     data-categories="healthcare-ai classification"
+                     data-name="Medical Image Classification"
+                     data-description="AI-powered medical image analysis system for disease detection with high accuracy using transfer learning."
+                     data-tech="PyTorch ResNet Medical Imaging">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="project-tags">
+                            <span class="project-tag">Healthcare AI</span>
+                            <span class="project-tag">ML</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Medical Image Classification</h3>
+                        <p>AI-powered medical image analysis system for disease detection with high accuracy using transfer learning.</p>
+                        <div class="project-tech">
+                            <span>PyTorch</span>
+                            <span>ResNet</span>
+                            <span>Medical Imaging</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="project-link">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- No results message -->
+            <div class="no-results" id="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <p>No projects found matching your search.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Yousra Ennejay. Crafted with <span class="heart">❤️</span> and <span class="coffee">☕</span></p>
+                <p class="footer-quote">"Where AI meets Artistry"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

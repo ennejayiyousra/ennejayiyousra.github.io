@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
     initializeTypingEffect();
     initializeProjectCards();
+    initializeProjectsPage();
+    initializeBackToTop();
 });
 
 // ========================================
@@ -170,7 +172,7 @@ function initializeNavigation() {
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            if (href.startsWith('#')) {
+            if (href.startsWith('#') && document.querySelector(href)) {
                 e.preventDefault();
                 const target = document.querySelector(href);
                 if (target) {
@@ -613,3 +615,93 @@ easterEggStyle.textContent = `
     }
 `;
 document.head.appendChild(easterEggStyle);
+
+// ========================================
+// PROJECTS PAGE - SEARCH & FILTER
+// ========================================
+function initializeProjectsPage() {
+    const searchInput = document.getElementById('project-search');
+    const searchClear = document.getElementById('search-clear');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('#projects-grid .project-card');
+    const noResults = document.getElementById('no-results');
+
+    if (!searchInput || !projectCards.length) return;
+
+    let activeFilter = 'all';
+
+    function filterAndSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        projectCards.forEach(card => {
+            const name = (card.dataset.name || '').toLowerCase();
+            const description = (card.dataset.description || '').toLowerCase();
+            const tech = (card.dataset.tech || '').toLowerCase();
+            const categories = (card.dataset.categories || '').toLowerCase();
+
+            const filterMatch = activeFilter === 'all' || categories.includes(activeFilter);
+            const searchMatch = !searchTerm ||
+                name.includes(searchTerm) ||
+                description.includes(searchTerm) ||
+                tech.includes(searchTerm);
+
+            if (filterMatch && searchMatch) {
+                card.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        if (noResults) {
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        if (searchClear) {
+            searchClear.style.display = searchTerm ? 'block' : 'none';
+        }
+    }
+
+    let searchTimeout;
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterAndSearch, 200);
+    });
+
+    if (searchClear) {
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            filterAndSearch();
+            searchInput.focus();
+        });
+    }
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.filter;
+            filterAndSearch();
+        });
+    });
+}
+
+// ========================================
+// BACK TO TOP BUTTON
+// ========================================
+function initializeBackToTop() {
+    const btn = document.querySelector('.back-to-top');
+    if (!btn) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
